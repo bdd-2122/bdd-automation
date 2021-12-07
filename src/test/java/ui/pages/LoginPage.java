@@ -6,12 +6,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import javax.naming.ldap.PagedResultsControl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import static jdk.xml.internal.SecuritySupport.getResourceAsStream;
 
 public class LoginPage extends Page {
 
@@ -30,8 +27,8 @@ public class LoginPage extends Page {
     @FindBy(id="block-ucll-menu-my-ucll")
     private WebElement myUcllBlock;
 
-    public LoginPage(WebDriver driver) {
-        super(driver);
+    public LoginPage() {
+        getDriver().get(getPath()+"/Shibboleth.sso/Login?target=https%3A%2F%2Fintranet.ucll.be%2Fnl%3Fq%3Dshib_login%2Fhome");
         try (InputStream input = LoginPage.class.getClassLoader().getResourceAsStream("credentials.properties")) {
             Properties properties = new Properties();
             properties.load(input);
@@ -43,12 +40,11 @@ public class LoginPage extends Page {
     }
 
     public void login() {
-        driver.get(getPath()+"/Shibboleth.sso/Login?target=https%3A%2F%2Fintranet.ucll.be%2Fnl%3Fq%3Dshib_login%2Fhome");
         usernameField.clear();
         usernameField.sendKeys(username);
         passwordField.sendKeys(password);
         loginButton.click();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
         wait.until(ExpectedConditions.visibilityOf(myUcllBlock));
     }
 }
